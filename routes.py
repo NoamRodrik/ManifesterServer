@@ -4,18 +4,13 @@ from database import database
 from database_query import DatabaseQuery
 from reponses import ErrorResponses, SuccessResponses
 from frozendict import frozendict
+from utilities import filter_by_arglist
 
 ####################
 # Global variables #
 ####################
 _flask_application = flask.Flask(__name__)
 _flask_application.config["DEBUG"] = True
-
-def _filter_by_arglist(arg, filter_func, db):
-    arg_val = request.args.getlist(arg)
-    if arg_val:
-        return filter_func(arg_val, db)
-    return db
 
 @_flask_application.errorhandler(404)
 def _route_page_not_found(error):
@@ -34,9 +29,9 @@ def _route_get_all_platforms(version):
         return ErrorResponses.version_doesnt_exist(version)
 
     db = database.to_dict(version)
-    db = _filter_by_arglist('field', DatabaseQuery.filter_by_fields,  db)
-    db = _filter_by_arglist('q',     DatabaseQuery.filter_by_queries, db)
-    db = _filter_by_arglist('name',  DatabaseQuery.filter_by_names,   db)
+    db = filter_by_arglist('field', DatabaseQuery.filter_by_fields,  db)
+    db = filter_by_arglist('q',     DatabaseQuery.filter_by_queries, db)
+    db = filter_by_arglist('name',  DatabaseQuery.filter_by_names,   db)
 
     return db
 
@@ -102,7 +97,7 @@ def _route_change_platform_field(version, platform_name, field):
 
 @_flask_application.route('/<version>/<platform_name>/<field>', methods=['DELETE'])
 def _route_remove_platform_field(version, platform_name, field):
-    if not platform_name or not version or not field:
+    if not version or not platform_name or not field:
         return ErrorResponses.version_name_or_field_not_inputted()
 
     if not database.has_version(version):

@@ -1,5 +1,6 @@
-from functools import wraps
+from functools import lru_cache, wraps
 from frozendict import *
+from flask import request
 
 def make_args_hashable(func):
     def _make_hashable(obj):
@@ -26,3 +27,9 @@ def make_args_hashable(func):
         return func(*frozen_args, **frozen_kwargs)
 
     return _wrapper
+
+def filter_by_arglist(arg, filter_func, db):
+    arg_val = request.args.getlist(arg)
+    if arg_val:
+        return filter_func(arg_val, db)
+    return db
