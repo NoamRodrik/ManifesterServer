@@ -3,6 +3,7 @@ from flask import request, jsonify
 from database import database
 from database_query import DatabaseQuery
 from reponses import ErrorResponses, SuccessResponses
+from frozendict import frozendict
 
 ####################
 # Global variables #
