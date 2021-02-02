@@ -56,7 +56,7 @@ def _route_add_platform(version, platform_name):
     if not database.has_version(version):
         return ErrorResponses.version_doesnt_exist(version)
 
-    if not database.contains_key(version, platform_name):
+    if database.contains_key(version, platform_name):
         return ErrorResponses.platform_already_exists(platform_name)
 
     database.set_by_key(version, platform_name, dict())

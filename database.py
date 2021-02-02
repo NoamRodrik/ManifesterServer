@@ -41,13 +41,13 @@ class _VersionizedDatabase:
     def get_field_by_key(self, version, key, field):
         return database.get_by_key(version, key)[field]
 
-    def set_by_key(self, version, key):
+    def set_by_key(self, version, key, data):
         self._pickledb_database[version].set(key, data)
-        self.save_version()
+        self._save_version()
 
     def rm_by_key(self, version, key):
         self._pickledb_database[version].rem(key)
-        self.save_version()
+        self._save_version()
 
     def _load_all_versions(self):
         # Generating DBs for each platform manifest version #
